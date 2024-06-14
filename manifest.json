@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Redmine Preview Enhanced",
+  "version": "1.0",
+  "description": "You will be able to edit redmine with the preview.",
+  "icons": {
+    "16": "src/icon.png",
+    "48": "src/icon.png",
+    "128": "src/icon.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["src/content.js"]
+    }
+  ]
+}
