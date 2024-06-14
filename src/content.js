@@ -3,7 +3,7 @@ window.onload = () => {
     const redmineURL = data.redmineURL;
     if (!redmineURL) {
       return;
-    } else if (redmineURL == location.origin) {
+    } else if (redmineURL != location.origin) {
       return;
     }
     if (!location.href.match(/\/wiki\//g)) {
