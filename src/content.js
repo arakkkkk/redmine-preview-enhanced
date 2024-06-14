@@ -27,7 +27,10 @@ const switchSideByView = () => {
   // unhidden
   $editor.classList.remove("hidden");
 
-  $editorDiv.scrollIntoView();
+  $Tabs.scrollIntoView({
+    behavior: "smooth", // スクロールの動作をスムーズにする
+    block: "start", // スクロール位置を調整 ("start", "center", "end", "nearest"が使用可能)
+  });
 };
 
 ////////////////////
@@ -45,6 +48,7 @@ $a.addEventListener("click", function (event) {
     if (!$t.querySelector("a")) {
       continue;
     }
+    $tabElements.querySelector("div").classList.remove("hidden");
     $t.querySelector("a").classList.remove("selected");
   }
   $a.classList.add("selected");
@@ -57,7 +61,10 @@ $editTab.addEventListener("click", function (event) {
   $editor.style.width = "95%";
   $editor.style.marginRight = "";
   $editor.style.height = "95vh";
-  $editorDiv.scrollIntoView();
+  $Tabs.scrollIntoView({
+    behavior: "smooth", // スクロールの動作をスムーズにする
+    block: "start", // スクロール位置を調整 ("start", "center", "end", "nearest"が使用可能)
+  });
 });
 // Preview Tab
 $previewTab.addEventListener("click", function (event) {
@@ -192,7 +199,11 @@ $editor.addEventListener("dblclick", function (event) {
         l.replace(/^h\d+\. /g, "");
         l.replace(/^p\(\. /g, "");
         let m = findTagsByText($preview, l);
-        m.tag.scrollIntoView();
+        // m.tag.scrollIntoView({
+        //   behavior: "smooth", // スクロールの動作をスムーズにする
+        //   block: "start", // スクロール位置を調整 ("start", "center", "end", "nearest"が使用可能)
+        // });
+        $preview.scrollTop = m.tag.offsetTop - 225;
         // hightlight
         highlightElem(m.tag);
         break;
