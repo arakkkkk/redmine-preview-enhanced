@@ -9,10 +9,16 @@
     "128": "src/icon.png"
   },
 
+  "permissions": ["storage"],
+
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
       "js": ["src/content.js"]
     }
-  ]
+  ],
+
+  "action": {
+    "default_popup": "src/popup.html"
+  }
 }
