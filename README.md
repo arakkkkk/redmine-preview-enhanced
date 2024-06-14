@@ -18,7 +18,8 @@ A Chrome/Edge Extension to be able to edit redmine with the preview.
 4. Click on the `SideBy` tab when it appears.
 5. Double-click the text on the editing screen to jump to the corresponding preview.
 6. Double-click on the text in the preview to jump to the corresponding preview.
-7. Lets write your wiki!
+7. Click the SideBy tab again to update the preview.
+8. Lets write your wiki!
 
 ## Future development
 - [ ] Jump Function Enhancement
