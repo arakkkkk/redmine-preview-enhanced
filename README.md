@@ -17,14 +17,11 @@ A Chrome/Edge Extension to be able to edit redmine with the preview.
 2. Click on the popup and enter the redmine URL.(ex. https://your.redmine.com)
 3. Click `Edit` to start editing the wiki.
 4. Click on the `SideBy` tab when it appears.
-
-![](docs/start_sideby.gif)
+* ![demo](docs/start_sideby.gif)
 5. Double-click the text on the editing screen to jump to the corresponding preview.
-
-![](docs/jump_to_preview.gif)
+* ![demo](docs/jump_to_preview.gif)
 6. Double-click on the text in the preview to jump to the corresponding preview.
-
-![](docs/jump_to_editor.gif)
+* ![demo](docs/jump_to_editor.gif)
 7. Click the SideBy tab again to update the preview.
 8. Lets write your wiki!
 
