@@ -27,3 +27,4 @@ A Chrome/Edge Extension to be able to edit redmine with the preview.
 
 ## Future development
 - [x] Jump Function Enhancement
+- [ ] Jump with scroll
