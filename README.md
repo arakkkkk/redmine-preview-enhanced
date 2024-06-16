@@ -26,4 +26,4 @@ A Chrome/Edge Extension to be able to edit redmine with the preview.
 8. Lets write your wiki!
 
 ## Future development
-- [ ] Jump Function Enhancement
+- [x] Jump Function Enhancement
