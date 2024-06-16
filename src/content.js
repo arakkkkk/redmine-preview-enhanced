@@ -87,99 +87,54 @@ window.onload = () => {
     // Preview to Editor
     ///////////////////////////
     $preview.addEventListener("dblclick", function (event) {
-      const $clicked = event.target;
-      let text = null;
-      if ($clicked.tagName.match(/H\d/g)) {
-        text = $clicked.tagName.toLowerCase() + ". " + $clicked.innerText;
-        text = text.slice(0, -1);
-      } else if ($clicked.tagName == "STRONG") {
-        text = "*" + $clicked.innerText + "*";
-      } else if ($clicked.tagName == "LI") {
-        text = "* " + $clicked.innerText;
-      }
-      if (text === null) {
-        return;
-      }
-      console.log("serch for: ", text);
-      const startIndex = $editor.value.indexOf(text); // 検索文字列の開始位置を取得
-
-      if (startIndex !== -1) {
-        // 検索文字列が見つかった場合
-        $editor.focus(); // textareaにフォーカス
-        $editor.setSelectionRange(startIndex, startIndex + text.length); // 検索文字列を選択
-        $editor.scrollTop =
-          $editor.scrollHeight * (startIndex / $editor.value.length);
+      let $clicked = event.target;
+      let previewLines = parseDOM($preview);
+      if (previewLines.getByDOM($clicked) === null) {
+        if (previewLines.getByDOM($clicked.parentElement) === null) {
+          $clicked = previewLines.getByDOM(
+            $clicked.parentElement.parentElement,
+          );
+        } else {
+          $clicked = previewLines.getByDOM($clicked.parentElement);
+        }
       } else {
-        // 検索文字列が見つからなかった場合の処理
-        // console.log("検索文字列が見つかりませんでした。");
+        $clicked = previewLines.getByDOM($clicked);
       }
+      console.log("clicked:", $clicked);
+      // count parsed line
+      let isPre = false;
+      const lines = $editor.value.split("\n");
+      let startIndex = 0;
+      let lineText;
+      let currentNum = 0;
+      let i;
+      for (i = 0; i < lines.length; i++) {
+        if (currentNum == $clicked.id) break;
+        let line = lines[i];
+        startIndex += line.length + 1;
+        if (line == "") {
+          continue;
+        } else if (isPre) {
+          if (line.includes("</pre>")) isPre = false;
+          continue;
+        }
+        if (line.includes("<pre>")) {
+          isPre = true;
+        }
+        currentNum += 1;
+        lineText = line;
+      }
+      startIndex -= lineText.length;
+
+      $editor.focus(); // textareaにフォーカス
+      $editor.setSelectionRange(startIndex - 1, startIndex + lineText.length); // 検索文字列を選択
+      $editor.scrollTop =
+        $editor.scrollHeight * (i / lines.length) - $editor.clientHeight / 10;
     });
 
     ///////////////////////////
     // Editor to Preview
     ///////////////////////////
-    function findTagsByText(element, tagText) {
-      // 結果を格納する配列
-      let res = null;
-
-      // 再帰関数
-      function traverse(node) {
-        // ノードがテキストノードの場合
-        let serchText = tagText;
-        if (node.parentNode.tagName.match(/H\d/g)) {
-          serchText = node.parentNode.tagName.toLowerCase() + ". " + tagText;
-        } else if (node.parentNode.tagName == "STRONG") {
-          serchText = "*" + tagText + "*";
-        }
-        if (node.nodeType === Node.TEXT_NODE) {
-          if (node.textContent.match(/^[\s\n\r]*$/g)) {
-            return;
-          }
-          let regexp = new RegExp(
-            node.textContent
-              .trim()
-              .replaceAll("(", "\\(")
-              .replaceAll(")", "\\)")
-              .replaceAll("[", "\\[")
-              .replaceAll("]", "\\]")
-              .replaceAll(".", "\\.")
-              // .replaceAll("\\", "\\\\")
-              .replaceAll("/", "\\/")
-              .replaceAll("*", "\\*"),
-          );
-          let match = serchText.match(regexp);
-          if (match) {
-            // 親要素を配列に追加
-            if (res === null) {
-              res = {
-                tag: node.parentNode,
-                matched: match[0],
-              };
-            } else if (match[0].length > res.matched.length) {
-              res = {
-                tag: node.parentNode,
-                matched: match[0],
-              };
-            }
-          }
-        } else {
-          // 子ノードを再帰的に処理
-          for (let i = 0; i < node.childNodes.length; i++) {
-            if (node.childNodes[i].classList) {
-              if (node.childNodes[i].classList.contains("toc")) {
-                continue;
-              }
-            }
-            traverse(node.childNodes[i]);
-          }
-        }
-      }
-
-      // ルート要素から再帰処理を開始
-      traverse(element);
-      return res;
-    }
-
     const highlightElem = ($e) => {
       // ハイライトのためのCSSクラス
       const highlightClass = "highlight";
@@ -188,42 +143,47 @@ window.onload = () => {
       // 一定時間後にハイライトを解除
       setTimeout(function () {
         $e.classList.remove(highlightClass); // ハイライトクラスを削除
-      }, 3000); // 3秒後に解除
+      }, 2000); // 3秒後に解除
     };
 
-    let lines = [];
     $editor.addEventListener("dblclick", function (event) {
       // Get clicked lines
-      const cursorNum = $editor.selectionStart;
+      const clickedTextNum = $editor.selectionStart;
       const text = $editor.value;
-      let current_num = 0;
-      for (let line of text.split("\n")) {
-        lines.push(line);
-        if (
-          current_num <= cursorNum &&
-          cursorNum <= current_num + line.length + 1
-        ) {
-          // Search line preview
-          console.log("clicked", lines[lines.length - 1]);
-          for (let i = lines.length - 1; i > -1; i--) {
-            let l = lines[i];
-            l.replace(/^\*+ /g, "");
-            l.replace(/^h\d+\. /g, "");
-            l.replace(/^p\(\. /g, "");
-            let m = findTagsByText($preview, l);
-            // m.tag.scrollIntoView({
-            //   behavior: "smooth", // スクロールの動作をスムーズにする
-            //   block: "start", // スクロール位置を調整 ("start", "center", "end", "nearest"が使用可能)
-            // });
-            $preview.scrollTop = m.tag.offsetTop - 225;
-            // hightlight
-            highlightElem(m.tag);
-            break;
-          }
-          return;
+      const clickedLine = text.slice(0, clickedTextNum).split("\n").length;
+      // count parsed line
+      let currentNum = 0;
+      let isPre = false;
+      const lines = text.split("\n");
+      for (let i = 0; i < lines.length; i++) {
+        if (i == clickedLine) break;
+        let line = lines[i];
+        if (line == "") {
+          continue;
+        } else if (isPre) {
+          if (line.includes("</pre>")) isPre = false;
+          continue;
         }
-        current_num += line.length + 1;
+        if (line.includes("<pre>")) {
+          isPre = true;
+        }
+        currentNum += 1;
       }
+      let previewLines = parseDOM($preview);
+      let clikedLine = previewLines.getByID(currentNum);
+      console.log(`clicked: count${currentNum}, elem: ${clikedLine}`);
+      $preview.scrollTop =
+        clikedLine.dom.offsetTop - 225 - $preview.clientHeight / 10;
+      highlightElem(clikedLine.dom);
     });
+
+    // $editor.addEventListener("scroll", function (event) {
+    //   let scrollTop = $editor.scrollTop;
+    //   let scrollRatio = scrollTop / $editor.scrollHeight;
+    //   let previewLines = parseDOM($preview);
+    //   let lineNumber = Math.floor(previewLines.data.length * scrollRatio);
+    //   previewLines.jump($preview, lineNumber);
+    // });
+    // $preview.addEventListener("scroll", function (event) {});
   });
 };
