@@ -86,7 +86,15 @@ const parseDOM = (parent, isFirstRun = true) => {
   let childs = parent.childNodes;
   for (let i = 0; i < childs.length; i++) {
     let child = childs[i];
+    // support toc
+    if (child.className == "toc") {
+      let line = new Line(child);
+      _lines.append(line);
+      continue;
+    }
+    // rec
     let followingLines = parseDOM(child, false);
+
     // lineTagListに入ったtagならlinesに追加
     if (lineTagList.includes(child.nodeName)) {
       if (isFirstRun) {
