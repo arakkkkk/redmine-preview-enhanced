@@ -1,9 +1,10 @@
 window.onload = () => {
   chrome.storage.sync.get("redmineURL", (data) => {
     const redmineURL = data.redmineURL;
-    if (!redmineURL) {
-      return;
-    } else if (redmineURL != location.origin) {
+    const patternRegex = new RegExp(
+      "^" + redmineURL.replace(/\*/g, ".*") + "$",
+    );
+    if (!location.href.match(patternRegex)) {
       return;
     }
     if (!location.href.match(/\/wiki\//g)) {
