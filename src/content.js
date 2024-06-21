@@ -7,7 +7,10 @@ window.onload = () => {
     if (!location.href.match(patternRegex)) {
       return;
     }
-    if (!location.href.match(/\/wiki\//g)) {
+    if (
+      !location.href.match(/\/wiki\//g) &&
+      !location.href.match(/\/issues\//g)
+    ) {
       return;
     }
 
