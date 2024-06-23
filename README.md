@@ -4,6 +4,12 @@ A Chrome/Edge Extension to be able to edit redmine with the preview.
 
 ## Instration
 
+### Chrome Web Store
+
+[Redmine Preview Enhanced -- Chrome Web Store](https://chromewebstore.google.com/detail/redmine-preview-enhanced/dlogdnhahholjdnficfhmdgefgknnnhj)
+
+### Manual Instration
+
 1. Clone this repository
 2. `Load Unpacked` from `chrome://extensions/`
 
