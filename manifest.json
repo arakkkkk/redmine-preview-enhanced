@@ -14,11 +14,16 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/previewParser.js", "src/content.js"]
+      "js": [
+        "src/contents/previewParser.js",
+        "src/contents/previewSwitcher.js",
+        "src/contents/jump.js",
+        "src/contents/content.js"
+      ]
     }
   ],
 
   "action": {
-    "default_popup": "src/popup.html"
+    "default_popup": "src/popup/popup.html"
   }
 }
