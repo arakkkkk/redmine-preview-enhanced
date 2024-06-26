@@ -54,17 +54,28 @@ const parseDOM = (parent, isFirstRun = true) => {
   let childs = parent.childNodes;
   for (let i = 0; i < childs.length; i++) {
     let child = childs[i];
+    // support toc
+    if (child.className == "toc") {
+      let line = new Line(child);
+      _lines.append(line);
+      continue;
+    }
+    // rec
     let followingLines = parseDOM(child, false);
+
     // lineTagListに入ったtagならlinesに追加
-    if (lineTagList.includes(child.nodeName)) {
+    if (
+      lineTagList.includes(child.nodeName) &&
+      child.innerHTML != "<p class></p>"
+    ) {
       if (isFirstRun) {
-      }
-      if (
-        isFirstRun ||
-        child.nodeName == "BR" || // <br />の場合親タグが<p>になる
-        !lineTagList.includes(parent.nodeName) // <li>の中に<pre>が入るパターンは一行になる
-      ) {
         let line = new Line(child);
+        _lines.append(line);
+      } else if (!lineTagList.includes(parent.nodeName)) {
+        let line = new Line(child);
+        _lines.append(line);
+      } else if (child.nodeName == "BR") {
+        let line = new Line(parent);
         _lines.append(line);
       }
     }

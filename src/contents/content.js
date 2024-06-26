@@ -34,6 +34,6 @@ window.onload = () => {
       document,
     );
 
-    jump($editor, $preview);
+    jump($editor, $preview, $Tabs);
   });
 };

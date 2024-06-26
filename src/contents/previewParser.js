@@ -96,13 +96,14 @@ const parseDOM = (parent, isFirstRun = true) => {
     let followingLines = parseDOM(child, false);
 
     // lineTagListに入ったtagならlinesに追加
-    if (lineTagList.includes(child.nodeName)) {
+    if (
+      lineTagList.includes(child.nodeName) &&
+      child.innerHTML != "<p class></p>"
+    ) {
       if (isFirstRun) {
-      }
-      if (
-        isFirstRun ||
-        !lineTagList.includes(parent.nodeName) // <li>の中に<pre>が入るパターンは一行になる
-      ) {
+        let line = new Line(child);
+        _lines.append(line);
+      } else if (!lineTagList.includes(parent.nodeName)) {
         let line = new Line(child);
         _lines.append(line);
       } else if (child.nodeName == "BR") {

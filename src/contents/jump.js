@@ -1,4 +1,4 @@
-const jump = ($editor, $preview) => {
+const jump = ($editor, $preview, $tabs) => {
   ///////////////////////////
   // Preview to Editor
   ///////////////////////////
@@ -94,40 +94,51 @@ const jump = ($editor, $preview) => {
     }
     // console.log(`clicked: count${currentNum}, elem: ${clikedLine}`);
     $preview.scrollTop = parseInt(
-      clikedLine.dom.offsetTop - 225 - $preview.clientHeight / 10,
+      clikedLine.dom.offsetTop - $preview.clientHeight / 3,
     );
     highlightElem(clikedLine.dom);
   });
 
-  // scroll
-  // $editor.addEventListener("scroll", function (event) {
-  //   // Get clicked lines
-  //   let scrollTop = $editor.scrollTop;
-  //   let scrollRatio = scrollTop / $editor.scrollHeight;
-  //   const text = $editor.value;
-  //   const clickedLine = parseInt(text.split("\n").length * scrollRatio) + 3;
-  //   console.log(clickedLine);
-  //   // count parsed line
-  //   let currentNum = 0;
-  //   let isPre = false;
-  //   const lines = text.split("\n");
-  //   for (let i = 0; i < lines.length; i++) {
-  //     if (i == clickedLine) break;
-  //     let line = lines[i];
-  //     if (line == "") {
-  //       continue;
-  //     } else if (isPre) {
-  //       if (line.includes("</pre>")) isPre = false;
-  //       continue;
-  //     }
-  //     if (line.includes("<pre>")) {
-  //       isPre = true;
-  //     }
-  //     currentNum += 1;
-  //   }
-  //   let previewLines = parseDOM($preview);
-  //   let clikedLine = previewLines.getByID(currentNum);
-  //   $preview.scrollTop =
-  //     clikedLine.dom.offsetTop - 225 - $preview.clientHeight / 10;
-  // });
+  chrome.storage.sync.get("jumpOnScroll", (data) => {
+    if (data.jumpOnScroll == false) {
+      console.log("not");
+      return;
+    }
+    $editor.addEventListener("scroll", function (event) {
+      const $sidebyTab = $tabs.children[2].querySelector("a");
+      if (!$sidebyTab.classList.contains("selected")) {
+        return;
+      }
+      // Get clicked lines
+      let scrollTop = $editor.scrollTop;
+      let scrollRatio = scrollTop / $editor.scrollHeight;
+      const text = $editor.value;
+      const topLine = parseInt(text.split("\n").length * scrollRatio) + 1;
+      console.log(topLine);
+      // count parsed line
+      let currentNum = 0;
+      let isPre = false;
+      const lines = text.split("\n");
+      for (let i = 0; i < lines.length; i++) {
+        if (i == topLine) break;
+        let line = lines[i];
+        if (line == "") {
+          continue;
+        } else if (isPre) {
+          if (line.includes("</pre>")) isPre = false;
+          continue;
+        }
+        if (line.includes("<pre>")) {
+          isPre = true;
+        }
+        currentNum += 1;
+      }
+      let previewLines = parseDOM($preview);
+      let clikedLine = previewLines.getByID(currentNum);
+      console.log(clikedLine.dom);
+      $preview.scrollTop = parseInt(
+        clikedLine.dom.offsetTop - $preview.clientHeight / 3,
+      );
+    });
+  });
 };
