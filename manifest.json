@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Redmine Preview Enhanced",
-  "version": "1.1",
+  "version": "1.2",
   "description": "You will be able to edit redmine with the preview.",
   "icons": {
     "16": "src/icon.png",
